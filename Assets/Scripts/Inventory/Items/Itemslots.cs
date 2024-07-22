@@ -20,6 +20,7 @@ public class Itemslots : MonoBehaviour, IDropHandler
    public void SetCraftingSlot(ItemsDraggable child){
         itemScriptable = child.item;
         craftingManager.SetItems(itemScriptable);
+        craftingManager.SearchRecipe();
     }
 
     public void RemoveOnCraftingSlot(ItemScriptable item){
