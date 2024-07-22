@@ -5,21 +5,21 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Rigidbody2D rb;
+    Animator anim;
+    bool isFlipped = false;
     public bool isInShadow { get; private set; }
-
 
     [Header("Layers")]
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask lightLayer;
 
-    
     [Header("GameObjects")]
     [SerializeField] GameObject lightSource;
     [SerializeField] GameObject feet;
 
-
     [Header("Run & Jump")]
     [SerializeField] float runSpeed;
+    [SerializeField, Range(0, 1)] float inLightSlowdownValue;
     [SerializeField] float jumpForce;
     [SerializeField] float groundDetectionRayLength;
     [SerializeField] float cayoteTime;
@@ -28,27 +28,38 @@ public class Player : MonoBehaviour
     float jumpBufferCounter;
     float moveInput;
 
-
-    // [Header("Inventory")]
-
-
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
+        anim = GetComponent<Animator>();
+        isInShadow = true;
     }
 
-    void Update()
+    void FixedUpdate()
     {
-        HandleJump();
+        moveInput = Input.GetAxisRaw("Horizontal");
 
-        Debug.DrawLine(rb.position, lightSource.transform.position, Color.blue);
-        if (Physics2D.Linecast(rb.position, lightSource.transform.position, lightLayer))
-        {
-            isInShadow = true;
+        if(!isInShadow){
+            rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
+        }else{
+            rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
         }
-        else
-        {
-            isInShadow = false;
+    }
+        void Update()
+    {
+        JumpHandler();
+        FlipHandler();
+
+        //transform.position starts at pivot, the player pivot is at the bottom. I added offset so the raycast wont be hitting the ground all the time
+        if(lightSource != null){
+            if (Physics2D.Linecast(new Vector2(transform.position.x, transform.position.y + 1f), lightSource.transform.position, lightLayer))
+            {
+                isInShadow = true;
+            }
+            else
+            {
+                isInShadow = false;
+            }
         }
 
         if(rb.velocity.y < 0){
@@ -56,9 +67,27 @@ public class Player : MonoBehaviour
         }else{
             rb.gravityScale = 3;
         }
+
+        if(moveInput != 0){
+            anim.SetBool("run", true);
+        }else{
+            anim.SetBool("run", false);
+        }
+
+        
     }
 
-    void HandleJump(){
+    void FlipHandler(){
+        if(moveInput > 0 && isFlipped){
+            transform.Rotate(0, 180, 0);
+            isFlipped = !isFlipped;
+        }else if(moveInput < 0 && !isFlipped){
+            transform.Rotate(0, 180, 0);
+            isFlipped = !isFlipped;
+        }
+    }
+
+    void JumpHandler(){
         RaycastHit2D groundDetect = Physics2D.Raycast(feet.transform.position, Vector2.down, groundDetectionRayLength, groundLayer);
         if (groundDetect.collider != null)
         {
@@ -92,9 +121,14 @@ public class Player : MonoBehaviour
         }
     }
 
-    void FixedUpdate()
-    {
-        moveInput = Input.GetAxisRaw("Horizontal");
-        rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
+    void OnTriggerEnter2D(Collider2D other){
+        if(other.CompareTag("Light")){
+            isInShadow = false;
+        }
     }
+
+    void OnTriggerExit2D(Collider2D other){
+        isInShadow = true;
+    }
+
 }
