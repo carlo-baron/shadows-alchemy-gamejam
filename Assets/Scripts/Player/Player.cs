@@ -6,8 +6,11 @@ public class Player : MonoBehaviour
 {
     Rigidbody2D rb;
     Animator anim;
+    LadderClimb ladderClimbScript;
     bool isFlipped = false;
     public bool isInShadow { get; private set; }
+    public float defaultGravity { get; private set; }
+    public float fallGravity { get; private set;}
 
     [Header("Layers")]
     [SerializeField] LayerMask groundLayer;
@@ -28,30 +31,41 @@ public class Player : MonoBehaviour
     float jumpBufferCounter;
     float moveInput;
 
+
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
+        ladderClimbScript = GetComponent<LadderClimb>();
+
+        defaultGravity = 3f;
+        fallGravity = 4f;
+
         isInShadow = true;
+        ladderClimbScript.enabled = false;
     }
 
     void FixedUpdate()
     {
         moveInput = Input.GetAxisRaw("Horizontal");
 
-        if(!isInShadow){
+        if (!isInShadow)
+        {
             rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
-        }else{
+        }
+        else
+        {
             rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
         }
     }
-        void Update()
+    void Update()
     {
         JumpHandler();
         FlipHandler();
 
         //transform.position starts at pivot, the player pivot is at the bottom. I added offset so the raycast wont be hitting the ground all the time
-        if(lightSource != null){
+        if (lightSource != null)
+        {
             if (Physics2D.Linecast(new Vector2(transform.position.x, transform.position.y + 1f), lightSource.transform.position, lightLayer))
             {
                 isInShadow = true;
@@ -62,32 +76,43 @@ public class Player : MonoBehaviour
             }
         }
 
-        if(rb.velocity.y < 0){
-            rb.gravityScale = 4;
-        }else{
-            rb.gravityScale = 3;
+        if (rb.velocity.y < 0)
+        {
+            rb.gravityScale = fallGravity;
+        }
+        else
+        {
+            rb.gravityScale = defaultGravity;
         }
 
-        if(moveInput != 0){
+        if (moveInput != 0)
+        {
             anim.SetBool("run", true);
-        }else{
+        }
+        else
+        {
             anim.SetBool("run", false);
         }
 
-        
+
     }
 
-    void FlipHandler(){
-        if(moveInput > 0 && isFlipped){
+    void FlipHandler()
+    {
+        if (moveInput > 0 && isFlipped)
+        {
             transform.Rotate(0, 180, 0);
             isFlipped = !isFlipped;
-        }else if(moveInput < 0 && !isFlipped){
+        }
+        else if (moveInput < 0 && !isFlipped)
+        {
             transform.Rotate(0, 180, 0);
             isFlipped = !isFlipped;
         }
     }
 
-    void JumpHandler(){
+    void JumpHandler()
+    {
         RaycastHit2D groundDetect = Physics2D.Raycast(feet.transform.position, Vector2.down, groundDetectionRayLength, groundLayer);
         // print(groundDetect.collider.name);
         if (groundDetect.collider != null)
@@ -99,36 +124,60 @@ public class Player : MonoBehaviour
             cayoteTimeCounter -= Time.deltaTime;
         }
 
-        if(Input.GetKeyDown(KeyCode.Space)){
+        if (Input.GetKeyDown(KeyCode.Space))
+        {
             jumpBufferCounter = jumpBuffer;
-        }else{
+        }
+        else
+        {
             jumpBufferCounter -= Time.deltaTime;
         }
 
         if (jumpBufferCounter > 0 && cayoteTimeCounter > 0)
         {
             rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            if(Input.GetKey(KeyCode.Space)){
+            if (Input.GetKey(KeyCode.Space))
+            {
                 rb.velocity = new Vector2(rb.velocity.x, jumpForce);
                 jumpBufferCounter = 0;
-            }else{
-                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y *0.5f);
+            }
+            else
+            {
+                rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
             }
         }
 
-        if(Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0){
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y *0.5f);
+        if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0)
+        {
+            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
             cayoteTimeCounter = 0;
         }
     }
 
-    void OnTriggerEnter2D(Collider2D other){
-        if(other.CompareTag("Light")){
+    void OnTriggerEnter2D(Collider2D other)
+    {
+        if (other.tag == "Light")
+        {
             isInShadow = false;
+        }
+
+        switch (other.tag)
+        {
+            case "Light":
+                isInShadow = false;
+                break;
+            case "Ladder":
+                rb.velocity = Vector2.zero;
+                rb.gravityScale = 0;
+                // transform.position = new Vector2(other.transform.position.x, transform.position.y);
+                ladderClimbScript.enabled = true;
+                this.enabled = false;
+                break;
         }
     }
 
-    void OnTriggerExit2D(Collider2D other){
+    void OnTriggerExit2D(Collider2D other)
+    {
         isInShadow = true;
     }
 

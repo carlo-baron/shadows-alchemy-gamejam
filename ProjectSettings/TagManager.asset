@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Light
   - Shadow
+  - Ladder
   layers:
   - Default
   - TransparentFX
@@ -48,4 +49,7 @@ TagManager:
     locked: 0
   - name: World
     uniqueID: 121721431
+    locked: 0
+  - name: FG
+    uniqueID: 2191561155
     locked: 0
