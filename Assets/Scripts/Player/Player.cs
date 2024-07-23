@@ -89,6 +89,7 @@ public class Player : MonoBehaviour
 
     void JumpHandler(){
         RaycastHit2D groundDetect = Physics2D.Raycast(feet.transform.position, Vector2.down, groundDetectionRayLength, groundLayer);
+        // print(groundDetect.collider.name);
         if (groundDetect.collider != null)
         {
             cayoteTimeCounter = cayoteTime;
