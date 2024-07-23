@@ -111,7 +111,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 121721431
   m_SortingLayer: 2
-  m_SortingOrder: 2
+  m_SortingOrder: 3
   m_Sprite: {fileID: -2011114609, guid: 77cc1be57a9746b43a568ca01b668002, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -157,8 +157,8 @@ Rigidbody2D:
   m_GravityScale: 3
   m_Material: {fileID: 6200000, guid: 093b94f7ff0b5434e86ff09e74272556, type: 2}
   m_Interpolate: 0
-  m_SleepingMode: 1
-  m_CollisionDetection: 0
+  m_SleepingMode: 0
+  m_CollisionDetection: 1
   m_Constraints: 4
 --- !u!95 &4893402666176338638
 Animator:
@@ -252,4 +252,4 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b878d784be170394cb7f3569de4a8138, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  climbSpeed: 10
+  climbSpeed: 5
