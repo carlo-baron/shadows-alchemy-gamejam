@@ -30,6 +30,7 @@ public class Player : MonoBehaviour
     float cayoteTimeCounter;
     float jumpBufferCounter;
     float moveInput;
+    bool canJump;
 
 
     void Awake()
@@ -43,6 +44,7 @@ public class Player : MonoBehaviour
 
         isInShadow = true;
         ladderClimbScript.enabled = false;
+        canJump = true;
     }
 
     void FixedUpdate()
@@ -60,7 +62,9 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        JumpHandler();
+        if(canJump){
+            JumpHandler();
+        }
         FlipHandler();
 
         if (lightSource != null)
@@ -152,29 +156,38 @@ public class Player : MonoBehaviour
         }
     }
 
+    void SwitchToLadder(){
+        rb.velocity = Vector2.zero;
+        rb.gravityScale = 0;
+        ladderClimbScript.enabled = true;
+        this.enabled = false;
+}
+
     void OnTriggerEnter2D(Collider2D other)
     {
-        if (other.tag == "Light")
-        {
-            isInShadow = false;
-        }
-
         switch (other.tag)
         {
             case "Light":
                 isInShadow = false;
+                canJump = false;
+                lightSource = other.gameObject;
                 break;
             case "Ladder":
-                rb.velocity = Vector2.zero;
-                rb.gravityScale = 0;
-                ladderClimbScript.enabled = true;
-                this.enabled = false;
-                break;
+               SwitchToLadder();
+               break;
+        }
+    }
+
+    void OnTriggerStay2D(Collider2D other){
+        if(other.tag == "Ladder"){
+            SwitchToLadder();
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
+        lightSource = null;
+        canJump = true;
         isInShadow = true;
     }
 
