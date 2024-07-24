@@ -24,7 +24,7 @@ public class Player : MonoBehaviour
     [SerializeField] float runSpeed;
     [SerializeField, Range(0, 1)] float inLightSlowdownValue;
     [SerializeField] float jumpForce;
-    [SerializeField] float groundDetectionRayLength;
+    [SerializeField] float groundDetectionRadius;
     [SerializeField] float cayoteTime;
     [SerializeField] float jumpBuffer;
     float cayoteTimeCounter;
@@ -63,7 +63,6 @@ public class Player : MonoBehaviour
         JumpHandler();
         FlipHandler();
 
-        //transform.position starts at pivot, the player pivot is at the bottom. I added offset so the raycast wont be hitting the ground all the time
         if (lightSource != null)
         {
             if (Physics2D.Linecast(new Vector2(transform.position.x, transform.position.y + 1f), lightSource.transform.position, lightLayer))
@@ -113,9 +112,8 @@ public class Player : MonoBehaviour
 
     void JumpHandler()
     {
-        RaycastHit2D groundDetect = Physics2D.Raycast(feet.transform.position, Vector2.down, groundDetectionRayLength, groundLayer);
-        // print(groundDetect.collider.name);
-        if (groundDetect.collider != null)
+        bool grounded = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, groundLayer);
+        if (grounded)
         {
             cayoteTimeCounter = cayoteTime;
         }
@@ -169,7 +167,6 @@ public class Player : MonoBehaviour
             case "Ladder":
                 rb.velocity = Vector2.zero;
                 rb.gravityScale = 0;
-                // transform.position = new Vector2(other.transform.position.x, transform.position.y);
                 ladderClimbScript.enabled = true;
                 this.enabled = false;
                 break;
