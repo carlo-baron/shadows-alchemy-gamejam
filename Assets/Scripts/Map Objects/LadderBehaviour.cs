@@ -9,12 +9,13 @@ public class LadderBehaviour : MonoBehaviour
     void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
 
     void Update()
     {
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        if(GameObject.FindGameObjectWithTag("Player")){
+            player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        }
         if(player != null){
             if(transform.position.y < player.position.y){
                 boxCollider.isTrigger = false;

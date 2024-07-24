@@ -23,6 +23,10 @@ public class RotatingLamp : MonoBehaviour
 
     void Update()
     {
+        if(GameObject.FindGameObjectWithTag("Player")){
+            player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        }
+
         if (!playerDetected)
         {
             rotationFactor = Time.deltaTime * rotationSpeed;

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using Cinemachine;
 using UnityEngine;
 
-public class ResawnManager : MonoBehaviour
+public class RespawnManager : MonoBehaviour
 {
     private Transform currentRespawnPoint;
     private CinemachineVirtualCamera vcam;
@@ -12,7 +12,10 @@ public class ResawnManager : MonoBehaviour
     void Awake()
     {
         vcam = FindObjectOfType<CinemachineVirtualCamera>();
-        if(vcam.Follow != null) currentRespawnPoint = vcam.Follow.gameObject.GetComponentInChildren<Transform>();
+        if(vcam.Follow != null){
+            currentRespawnPoint = vcam.Follow.transform.GetChild(0).GetComponent<Transform>();
+        }
+
         playerTracker = GameObject.FindGameObjectWithTag("Player");
     }
 

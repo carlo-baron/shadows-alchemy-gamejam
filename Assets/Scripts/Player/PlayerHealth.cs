@@ -6,7 +6,7 @@ using UnityEngine.UI;
 public class PlayerHealth : MonoBehaviour
 {
     Player player;
-    [SerializeField] Slider healthBar;
+    Slider healthBar;
 
     [SerializeField] float maxHealth;
     float health;
@@ -17,6 +17,7 @@ public class PlayerHealth : MonoBehaviour
     void Start()
     {
         player = GetComponent<Player>();
+        healthBar = FindObjectOfType<Slider>();
         health = maxHealth;
 
         healthBar.maxValue = maxHealth;

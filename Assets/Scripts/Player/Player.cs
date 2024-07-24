@@ -32,6 +32,7 @@ public class Player : MonoBehaviour
     float cayoteTimeCounter;
     float jumpBufferCounter;
     float moveInput;
+    bool canRun;
     bool canJump;
 
     [Header("Death")]
@@ -52,19 +53,21 @@ public class Player : MonoBehaviour
         isInShadow = true;
         ladderClimbScript.enabled = false;
         canJump = true;
+        canRun = true;
     }
 
     void FixedUpdate()
     {
         moveInput = Input.GetAxisRaw("Horizontal");
-
-        if (!isInShadow)
-        {
-            rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
-        }
-        else
-        {
-            rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
+        if(canRun){
+            if (!isInShadow)
+            {
+                rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
+            }
+            else
+            {
+                rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
+            }
         }
     }
     void Update()
@@ -135,7 +138,9 @@ public class Player : MonoBehaviour
     void DeathDetection(){
         bool isDeathTile = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, deathLayer);
         if(isDeathTile){
+            rb.velocity = Vector2.zero;
             Die();
+            canRun = false;
         }
     }
 
