@@ -14,10 +14,13 @@ public class LadderBehaviour : MonoBehaviour
 
     void Update()
     {
-        if(transform.position.y < player.position.y){
-            boxCollider.isTrigger = false;
-        }else if(transform.position.y > player.position.y){
-            boxCollider.isTrigger = transform;
+        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
+        if(player != null){
+            if(transform.position.y < player.position.y){
+                boxCollider.isTrigger = false;
+            }else if(transform.position.y > player.position.y){
+                boxCollider.isTrigger = transform;
+            }
         }
     }
 }

@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     Rigidbody2D rb;
     Animator anim;
+    Collider2D myCollider;
     LadderClimb ladderClimbScript;
     bool isFlipped = false;
     public bool isInShadow { get; private set; }
@@ -15,6 +16,7 @@ public class Player : MonoBehaviour
     [Header("Layers")]
     [SerializeField] LayerMask groundLayer;
     [SerializeField] LayerMask lightLayer;
+    [SerializeField] LayerMask deathLayer;
 
     [Header("GameObjects")]
     [SerializeField] GameObject lightSource;
@@ -32,12 +34,17 @@ public class Player : MonoBehaviour
     float moveInput;
     bool canJump;
 
+    [Header("Death")]
+    [SerializeField] float deathRiseSpeed;
+    bool checkForDestroy = false;
+
 
     void Awake()
     {
         rb = GetComponent<Rigidbody2D>();
         anim = GetComponent<Animator>();
         ladderClimbScript = GetComponent<LadderClimb>();
+        myCollider = GetComponent<Collider2D>();
 
         defaultGravity = 3f;
         fallGravity = 4f;
@@ -97,6 +104,17 @@ public class Player : MonoBehaviour
             anim.SetBool("run", false);
         }
 
+        if(checkForDestroy){
+            if(rb.velocity.y < 0){
+                myCollider.enabled = false;
+            }
+
+            if(transform.position.y <= -10f){
+                Destroy(gameObject);
+            }
+        }else{
+            DeathDetection();
+        }
 
     }
 
@@ -112,6 +130,18 @@ public class Player : MonoBehaviour
             transform.Rotate(0, 180, 0);
             isFlipped = !isFlipped;
         }
+    }
+
+    void DeathDetection(){
+        bool isDeathTile = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, deathLayer);
+        if(isDeathTile){
+            Die();
+        }
+    }
+
+    void Die(){
+        rb.velocity = new Vector2(rb.velocity.x, deathRiseSpeed);
+        checkForDestroy = true;
     }
 
     void JumpHandler()

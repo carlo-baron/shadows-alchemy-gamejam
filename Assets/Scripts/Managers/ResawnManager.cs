@@ -12,7 +12,7 @@ public class ResawnManager : MonoBehaviour
     void Awake()
     {
         vcam = FindObjectOfType<CinemachineVirtualCamera>();
-        if(vcam.LookAt != null) currentRespawnPoint = vcam.LookAt.transform;
+        if(vcam.Follow != null) currentRespawnPoint = vcam.Follow.gameObject.GetComponentInChildren<Transform>();
         playerTracker = GameObject.FindGameObjectWithTag("Player");
     }
 
