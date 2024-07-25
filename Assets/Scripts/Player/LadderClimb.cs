@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class LadderClimb : MonoBehaviour
@@ -22,10 +23,18 @@ public class LadderClimb : MonoBehaviour
         moveInputX = Input.GetAxisRaw("Horizontal");
         moveInputY = Input.GetAxisRaw("Vertical");
         rb.velocity = new Vector2(moveInputX * climbSpeed, moveInputY * climbSpeed);
+
+        if(rb.velocity.magnitude != 0f){
+            mainScript.anim.SetBool("isClimbing", true);
+        }else{
+            mainScript.anim.SetBool("isClimbing", false);
+        }
     }
 
     void OnTriggerExit2D(Collider2D other){
         rb.gravityScale = mainScript.defaultGravity;
+        mainScript.anim.SetBool("onLadder", false);
+        mainScript.anim.SetBool("isClimbing", false);
         mainScript.enabled = true;
         this.enabled = false;
     }

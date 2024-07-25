@@ -5,10 +5,10 @@ using UnityEngine;
 public class Player : MonoBehaviour
 {
     Rigidbody2D rb;
-    Animator anim;
     Collider2D myCollider;
     LadderClimb ladderClimbScript;
     bool isFlipped = false;
+    public Animator anim { get; private set;}
     public bool isInShadow { get; private set; }
     public float defaultGravity { get; private set; }
     public float fallGravity { get; private set;}
@@ -195,6 +195,7 @@ public class Player : MonoBehaviour
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
         ladderClimbScript.enabled = true;
+        anim.SetBool("onLadder", true);
         this.enabled = false;
 }
 
