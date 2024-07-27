@@ -1,3 +1,4 @@
+using System.Runtime.CompilerServices;
 using UnityEngine;
 
 public class ChestBehaviour : MonoBehaviour
@@ -6,31 +7,46 @@ public class ChestBehaviour : MonoBehaviour
     [SerializeField] ItemScriptable[] items;
     [SerializeField] GameObject worldItemtemplate;
 
+    [Header("Spawning Contents")]
     [SerializeField] float maxSpawnOffset = 0.5f;
     [SerializeField] float spawnDelay;
+
+    [Header("Control Hint")]
+    [SerializeField] float fadeSpeed;
+    ControlHints controlHints;
 
     Transform itemSpawnPoint;
     BoxCollider2D boxCollider;
     Animator anim;
     bool isOpen = false;
-    void Start()
+    void Awake()
     {
         boxCollider = GetComponent<BoxCollider2D>();
         anim = GetComponent<Animator>();
+        controlHints = GetComponentInChildren<ControlHints>();
 
         itemSpawnPoint = GetComponentInChildren<Transform>();
     }
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (Input.GetKeyDown(KeyCode.F) && other.tag == "Player")
-        {
-            if (items != null)
+        if(other.tag == "Player"){
+            
+            controlHints.Show(fadeSpeed, 0);
+
+            if (Input.GetKeyDown(KeyCode.F))
             {
-                Invoke("DelayedSpawn", spawnDelay);
+                if (items != null)
+                {
+                    Invoke("DelayedSpawn", spawnDelay);
+                }
+                anim.SetTrigger("open");
             }
-            anim.SetTrigger("open");
         }
+    }
+
+    void OnTriggerExit2D(Collider2D other){
+        controlHints.Hide(fadeSpeed, 1);
     }
 
     void DelayedSpawn()
