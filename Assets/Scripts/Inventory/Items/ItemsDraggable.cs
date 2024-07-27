@@ -23,6 +23,7 @@ public class ItemsDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         isInitialized = true;
     }
     public void OnBeginDrag(PointerEventData eventData){
+        print("dragging");
         image.raycastTarget = false;
 
         if(transform.parent.gameObject.GetComponent<Itemslots>().isCraftingSlot){

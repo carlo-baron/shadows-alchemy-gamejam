@@ -5,7 +5,7 @@ using UnityEngine;
 
 public class RespawnManager : MonoBehaviour
 {
-    private Transform currentRespawnPoint;
+    public Transform currentRespawnPoint { get; private set;}
     private CinemachineVirtualCamera vcam;
     private GameObject playerTracker;
     [SerializeField] GameObject playerPrefab;

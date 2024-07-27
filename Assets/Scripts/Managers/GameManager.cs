@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class GameManager : MonoBehaviour
@@ -12,11 +13,7 @@ public class GameManager : MonoBehaviour
         }else{
             Destroy(gameObject);
         }
-    }
 
-    void Start()
-    {
-        
     }
 
     void Update()

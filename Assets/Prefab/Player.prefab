@@ -210,6 +210,7 @@ MonoBehaviour:
   groundDetectionRadius: 0.1
   cayoteTime: 0.2
   jumpBuffer: 0.2
+  acceleration: 0
   deathRiseSpeed: 19
 --- !u!114 &4893402666176338636
 MonoBehaviour:
@@ -239,9 +240,9 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   menuObjects:
-  - {fileID: 0}
-  - {fileID: 0}
-  - {fileID: 0}
+  - {fileID: 8775354551915508909, guid: 3a79a90c3b0594dfda0a84826ccfa85d, type: 3}
+  - {fileID: 6380430524706064228, guid: a8f509f667fd14f2ba4e321fe98c21d9, type: 3}
+  - {fileID: 8848145007116903519, guid: 4d2eff6b967a04d5b940e19f020205a6, type: 3}
   dataQueue: {fileID: 0}
 --- !u!114 &1965483563
 MonoBehaviour:

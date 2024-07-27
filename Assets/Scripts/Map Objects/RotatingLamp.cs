@@ -17,7 +17,6 @@ public class RotatingLamp : MonoBehaviour
     void Awake()
     {
         playerDetected = false;
-        player = GameObject.FindGameObjectWithTag("Player").GetComponent<Transform>();
     }
 
 

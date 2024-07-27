@@ -12,6 +12,7 @@ public class WorldItems : MonoBehaviour
     public SpriteRenderer spriteRenderer;
     CircleCollider2D circleCollider;
     Rigidbody2D rb;
+    
     void Awake()
     {
         spriteRenderer = GetComponent<SpriteRenderer>();

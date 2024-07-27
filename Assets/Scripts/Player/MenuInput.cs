@@ -5,13 +5,18 @@ using UnityEngine;
 
 public class MenuInput : MonoBehaviour
 {
-    [SerializeField] GameObject[] menuObjects;
-    public DataQueue dataQueue;
+    GameObject[] menuObjects;
+    private UIManager UImanager;
+    private DataQueue dataQueue;
     bool isOpen = false;
 
-    void OnAwake(){
-        foreach(GameObject obj in menuObjects){
-            obj.SetActive(false);
+    void Awake(){
+        dataQueue = GameObject.FindObjectOfType<DataQueue>();
+        UImanager = GameObject.FindObjectOfType<UIManager>();
+        menuObjects = new GameObject[UImanager.hiddenUI.Length];
+
+        for(int i = 0; i < menuObjects.Length; i++){
+            menuObjects[i] = UImanager.hiddenUI[i];
         }
     }
     void Update()
