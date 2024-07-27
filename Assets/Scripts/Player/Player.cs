@@ -8,10 +8,10 @@ public class Player : MonoBehaviour
     Collider2D myCollider;
     LadderClimb ladderClimbScript;
     bool isFlipped = false;
-    public Animator anim { get; private set;}
+    public Animator anim { get; private set; }
     public bool isInShadow { get; private set; }
     public float defaultGravity { get; private set; }
-    public float fallGravity { get; private set;}
+    public float fallGravity { get; private set; }
 
     [Header("Layers")]
     [SerializeField] LayerMask groundLayer;
@@ -29,11 +29,13 @@ public class Player : MonoBehaviour
     [SerializeField] float groundDetectionRadius;
     [SerializeField] float cayoteTime;
     [SerializeField] float jumpBuffer;
+    [SerializeField, Range(0, 1)] float acceleration;
     float cayoteTimeCounter;
     float jumpBufferCounter;
     float moveInput;
     bool canRun;
     bool canJump;
+    bool grounded;
 
     [Header("Death")]
     [SerializeField] float deathRiseSpeed;
@@ -59,7 +61,8 @@ public class Player : MonoBehaviour
     void FixedUpdate()
     {
         moveInput = Input.GetAxisRaw("Horizontal");
-        if(canRun){
+        if (canRun)
+        {
             if (!isInShadow)
             {
                 rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
@@ -72,9 +75,7 @@ public class Player : MonoBehaviour
     }
     void Update()
     {
-        if(canJump){
-            JumpHandler();
-        }
+        JumpHandler();
         FlipHandler();
 
         if (lightSource != null)
@@ -89,13 +90,16 @@ public class Player : MonoBehaviour
             }
         }
 
-        if (rb.velocity.y < 0)
+        if (!grounded && rb.velocity.y < 0)
         {
             rb.gravityScale = fallGravity;
+            anim.SetBool("isFalling", true);
+            anim.SetBool("onJump", false);
         }
         else
         {
             rb.gravityScale = defaultGravity;
+            anim.SetBool("isFalling", false);
         }
 
         if (moveInput != 0)
@@ -107,15 +111,20 @@ public class Player : MonoBehaviour
             anim.SetBool("run", false);
         }
 
-        if(checkForDestroy){
-            if(rb.velocity.y < 0){
+        if (checkForDestroy)
+        {
+            if (rb.velocity.y < 0)
+            {
                 myCollider.enabled = false;
             }
 
-            if(transform.position.y <= -10f){
+            if (transform.position.y <= -10f)
+            {
                 Destroy(gameObject);
             }
-        }else{
+        }
+        else
+        {
             DeathDetection();
         }
 
@@ -135,23 +144,26 @@ public class Player : MonoBehaviour
         }
     }
 
-    void DeathDetection(){
+    void DeathDetection()
+    {
         bool isDeathTile = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, deathLayer);
-        if(isDeathTile){
+        if (isDeathTile)
+        {
             rb.velocity = Vector2.zero;
             Die();
             canRun = false;
         }
     }
 
-    void Die(){
+    void Die()
+    {
         rb.velocity = new Vector2(rb.velocity.x, deathRiseSpeed);
         checkForDestroy = true;
     }
 
     void JumpHandler()
     {
-        bool grounded = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, groundLayer);
+        grounded = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, groundLayer);
         if (grounded)
         {
             cayoteTimeCounter = cayoteTime;
@@ -161,61 +173,83 @@ public class Player : MonoBehaviour
             cayoteTimeCounter -= Time.deltaTime;
         }
 
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (canJump)
         {
-            jumpBufferCounter = jumpBuffer;
-        }
-        else
-        {
-            jumpBufferCounter -= Time.deltaTime;
-        }
-
-        if (jumpBufferCounter > 0 && cayoteTimeCounter > 0)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-            if (Input.GetKey(KeyCode.Space))
+            if (Input.GetKeyDown(KeyCode.Space))
             {
-                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
-                jumpBufferCounter = 0;
+                jumpBufferCounter = jumpBuffer;
+                anim.SetBool("onJump", true);
             }
             else
             {
+                jumpBufferCounter -= Time.deltaTime;
+            }
+
+            if (jumpBufferCounter > 0 && cayoteTimeCounter > 0)
+            {
+                rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                if (Input.GetKey(KeyCode.Space))
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, jumpForce);
+                    jumpBufferCounter = 0;
+                }
+                else
+                {
+                    rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+                }
+            }
+
+            if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0)
+            {
                 rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
+                cayoteTimeCounter = 0;
             }
         }
 
-        if (Input.GetKeyUp(KeyCode.Space) && rb.velocity.y > 0)
-        {
-            rb.velocity = new Vector2(rb.velocity.x, rb.velocity.y * 0.5f);
-            cayoteTimeCounter = 0;
-        }
     }
 
-    void SwitchToLadder(){
+    void SwitchToLadder()
+    {
         rb.velocity = Vector2.zero;
         rb.gravityScale = 0;
         ladderClimbScript.enabled = true;
         anim.SetBool("onLadder", true);
+
+        anim.SetBool("onJump", false);
+        anim.SetBool("isFalling", false);
         this.enabled = false;
-}
+    }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         switch (other.tag)
         {
             case "Light":
-                isInShadow = false;
-                canJump = false;
                 lightSource = other.gameObject;
+                if (lightSource.GetComponent<RotatingLamp>() != null)
+                {
+                    if (lightSource.GetComponent<RotatingLamp>().playerDetected)
+                    {
+                        isInShadow = false;
+                        canJump = false;
+                    }
+                }
+                else
+                {
+                    isInShadow = false;
+                    canJump = false;
+                }
                 break;
             case "Ladder":
-               SwitchToLadder();
-               break;
+                SwitchToLadder();
+                break;
         }
     }
 
-    void OnTriggerStay2D(Collider2D other){
-        if(other.tag == "Ladder"){
+    void OnTriggerStay2D(Collider2D other)
+    {
+        if (other.tag == "Ladder")
+        {
             SwitchToLadder();
         }
     }

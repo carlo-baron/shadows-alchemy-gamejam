@@ -12,7 +12,7 @@ public class RotatingLamp : MonoBehaviour
     private float rotationFactor;
     
 
-    bool playerDetected;
+    public bool playerDetected { get; private set; }
 
     void Awake()
     {
@@ -46,6 +46,7 @@ public class RotatingLamp : MonoBehaviour
         {
             RaycastHit2D ray = Physics2D.Linecast(transform.position, player.position, playerLayer);
             if(ray.collider != null){
+                print("player detected");
                 playerDetected = true;
             }
         }

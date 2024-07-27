@@ -269,7 +269,9 @@ TextureImporter:
     indices: 
     edges: []
     weights: []
-    secondaryTextures: []
+    secondaryTextures:
+    - texture: {fileID: 2800000, guid: 826806d55607d4c13aefd8899481dc60, type: 3}
+      name: run normal map
     nameFileIdTable:
       run_sprite_0: -2011114609
       run_sprite_1: -1874872539
