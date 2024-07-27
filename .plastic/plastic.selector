@@ -1,0 +1,4 @@
+repository "shadows-alchemy-gamejam@jamByThor@cloud"
+  path "/"
+    br "/main"
+    co "/main"
