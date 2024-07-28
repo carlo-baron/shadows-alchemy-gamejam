@@ -31,6 +31,10 @@ public class PlayerHealth : MonoBehaviour
         }else{
             Damage(damagePerSecond);
         }
+
+        if(health <= 0){
+            player.Die();
+        }
     }
 
     void Heal(float healPerSecond){

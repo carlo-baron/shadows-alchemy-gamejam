@@ -43,7 +43,6 @@ public class ChestBehaviour : MonoBehaviour
         {
             if (Input.GetKeyDown(KeyCode.F) && !isSpawning)
             {
-                print("clicked");
                 if (items != null && !isOpen)
                 {
                     controlHints.Hide(fadeSpeed);
@@ -57,6 +56,7 @@ public class ChestBehaviour : MonoBehaviour
     void OnTriggerExit2D(Collider2D other)
     {
         if (other.CompareTag("Player"))
+            controlHints.StopAllCoroutines();
             controlHints.Hide(fadeSpeed);
     }
 

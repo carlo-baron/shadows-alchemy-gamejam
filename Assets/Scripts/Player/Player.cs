@@ -29,7 +29,6 @@ public class Player : MonoBehaviour
     [SerializeField] float groundDetectionRadius;
     [SerializeField] float cayoteTime;
     [SerializeField] float jumpBuffer;
-    [SerializeField, Range(0, 1)] float acceleration;
     float cayoteTimeCounter;
     float jumpBufferCounter;
     float moveInput;
@@ -133,15 +132,18 @@ public class Player : MonoBehaviour
     void FlipHandler()
     {
         if (moveInput > 0 && isFlipped)
-        {
-            transform.Rotate(0, 180, 0);
-            isFlipped = !isFlipped;
+{
+            Flip();
         }
         else if (moveInput < 0 && !isFlipped)
         {
-            transform.Rotate(0, 180, 0);
-            isFlipped = !isFlipped;
+            Flip();
         }
+    }
+
+    public void Flip(){
+        transform.Rotate(0, 180, 0);
+        isFlipped = !isFlipped;
     }
 
     void DeathDetection()
@@ -149,16 +151,16 @@ public class Player : MonoBehaviour
         bool isDeathTile = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, deathLayer);
         if (isDeathTile)
         {
-            rb.velocity = Vector2.zero;
             Die();
-            canRun = false;
         }
     }
 
-    void Die()
+    public void Die()
     {
+        rb.velocity = Vector2.zero;
         rb.velocity = new Vector2(rb.velocity.x, deathRiseSpeed);
         checkForDestroy = true;
+        canRun = false;
     }
 
     void JumpHandler()

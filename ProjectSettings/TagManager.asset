@@ -8,6 +8,7 @@ TagManager:
   - Ladder
   - Vcam
   - HealthBar
+  - door
   layers:
   - Default
   - TransparentFX

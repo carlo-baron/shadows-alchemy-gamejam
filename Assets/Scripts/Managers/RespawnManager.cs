@@ -21,6 +21,8 @@ public class RespawnManager : MonoBehaviour
 
     void Update()
     {
+        currentRespawnPoint = vcam.Follow.transform.GetChild(0).GetComponent<Transform>();
+
         if(playerTracker == null){
             Respawn();
         }
