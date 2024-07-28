@@ -45,7 +45,6 @@ public class RotatingLamp : MonoBehaviour
         {
             RaycastHit2D ray = Physics2D.Linecast(transform.position, player.position, playerLayer);
             if(ray.collider != null){
-                print("player detected");
                 playerDetected = true;
             }
         }
