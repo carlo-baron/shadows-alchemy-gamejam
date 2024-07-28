@@ -188,7 +188,7 @@ CanvasGroup:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1191745042}
   m_Enabled: 1
-  m_Alpha: 1
+  m_Alpha: 0
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
@@ -216,7 +216,6 @@ GameObject:
   - component: {fileID: 3804640520840131621}
   - component: {fileID: 3804640520840131620}
   - component: {fileID: 3804640520840131619}
-  - component: {fileID: -256760197146482972}
   - component: {fileID: 3804640520840131618}
   - component: {fileID: 3804640520840131617}
   m_Layer: 0
@@ -321,27 +320,6 @@ BoxCollider2D:
   serializedVersion: 2
   m_Size: {x: 2.5, y: 1.5}
   m_EdgeRadius: 0
---- !u!50 &-256760197146482972
-Rigidbody2D:
-  serializedVersion: 4
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3804640520840131616}
-  m_BodyType: 2
-  m_Simulated: 1
-  m_UseFullKinematicContacts: 0
-  m_UseAutoMass: 0
-  m_Mass: 1
-  m_LinearDrag: 0
-  m_AngularDrag: 0.05
-  m_GravityScale: 1
-  m_Material: {fileID: 0}
-  m_Interpolate: 0
-  m_SleepingMode: 0
-  m_CollisionDetection: 1
-  m_Constraints: 7
 --- !u!95 &3804640520840131618
 Animator:
   serializedVersion: 5
@@ -375,9 +353,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5454b08ee14244137862faf9d500ff97, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items: []
+  items:
+  - {fileID: 11400000, guid: cadc0d1c8efb2054d994a6bc69115f29, type: 2}
   worldItemtemplate: {fileID: 2940357870549223593, guid: 1c3c8303ae54ce8439fc5668ac1db5e3, type: 3}
   maxSpawnOffset: 0.6
+  spawnSpeed: 6
   spawnDelay: 0.45
   fadeSpeed: 0.3
 --- !u!1 &6604786345513431630
