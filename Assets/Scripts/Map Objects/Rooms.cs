@@ -5,20 +5,16 @@ using UnityEngine;
 
 public class Rooms : MonoBehaviour
 {
-    private Transform player;
-    private CinemachineVirtualCamera vcam;
+    private RespawnManager respawnManager;
 
     void Awake(){
-        vcam = FindObjectOfType<CinemachineVirtualCamera>();
-    }
-
-    void Update(){
-        if(GameObject.FindGameObjectWithTag("Player")){
-            player = GameObject.FindGameObjectWithTag("Player").transform;
-        }
+        
+        respawnManager = GameObject.FindObjectOfType<RespawnManager>();
     }
 
     void OnTriggerStay2D(Collider2D other){
-        if(other.tag == "Player") vcam.Follow = transform;
+        if(other.tag == "Player"){
+            respawnManager.currentRespawnPoint = transform.GetChild(0);
+        }
     }
 }

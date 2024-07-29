@@ -11,7 +11,7 @@ public class DataQueue : MonoBehaviour
     }
     public void ReapplyData(){
         if(itemScriptables.Count > 0){
-            foreach(Itemslots slot in inventoryManager.slots){
+            foreach(Itemslots slot in inventoryManager.itemSlots){
                 ItemsDraggable itemChild = slot.GetComponentInChildren<ItemsDraggable>();
                 if(itemChild != null && !itemChild.isInitialized){
                     itemChild.InitializeItem(itemScriptables.Dequeue());

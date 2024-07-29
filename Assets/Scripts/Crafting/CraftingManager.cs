@@ -3,15 +3,19 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
 using UnityEngine;
+using Unity.VisualScripting;
 
 [System.Serializable]
 public class CraftingManager : MonoBehaviour
 {
+    [SerializeField] ItemScriptable[] abilityItems = new ItemScriptable[4];
     public List<ItemScriptable> items;
+    public List<GameObject> itemsObject;
     public string[] recipes;
     private string[] recipeData;
 
-    [SerializeField]private Image exchangeSprite;
+    [SerializeField]private Transform exchangeSlot;
+    [SerializeField]private GameObject itemTemplate;
     private ItemScriptable currentItem;
 
 
@@ -24,16 +28,22 @@ public class CraftingManager : MonoBehaviour
         if(items.Count < 3){
             Array.Copy(recipeData, recipes, recipeData.Length);
         }
+
+        if(exchangeSlot.childCount > 0 && items.Count < 3){
+            Destroy(exchangeSlot.GetChild(0).gameObject);
+        }
     }
 
-    public void SetItems(ItemScriptable item)
+    public void SetItems(GameObject item)
     {
-        items.Add(item);
+        itemsObject.Add(item);
+        items.Add(item.GetComponent<ItemsDraggable>().item);
     }
 
-    public void RemoveItem(ItemScriptable item)
+    public void RemoveItem(GameObject item)
     {
-        items.Remove(item);
+        itemsObject.Remove(item);
+        items.Remove(item.GetComponent<ItemsDraggable>().item);
     }
 
     public void SearchRecipe(){
@@ -54,13 +64,29 @@ public class CraftingManager : MonoBehaviour
                 }
 
                 if(recipes[i].Length <= 0){
-                    exchangeSprite.sprite = currentItem.sprite;
+                    if(exchangeSlot.childCount != 0){
+                        Destroy(exchangeSlot.GetChild(0).gameObject);
+                    }
+                    ShowExchange(abilityItems[i]);
+                    Array.Copy(recipeData, recipes, recipeData.Length);
                     break;
                 }
             }
         }
     }
 
+    void ShowExchange(ItemScriptable abilityData){
+        GameObject possibleExchange = Instantiate(itemTemplate, exchangeSlot.position, Quaternion.identity);
+        possibleExchange.GetComponent<ItemsDraggable>().InitializeItem(abilityData);
+        possibleExchange.transform.SetParent(exchangeSlot);
+    }
 
+    public void DestoryOffers(){
+        foreach(GameObject obj in itemsObject){
+            Destroy(obj);
+        }
+        itemsObject.Clear();
+        items.Clear();
+    }
 
 }

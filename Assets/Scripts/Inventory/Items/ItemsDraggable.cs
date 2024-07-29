@@ -23,11 +23,10 @@ public class ItemsDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         isInitialized = true;
     }
     public void OnBeginDrag(PointerEventData eventData){
-        print("dragging");
         image.raycastTarget = false;
 
         if(transform.parent.gameObject.GetComponent<Itemslots>().isCraftingSlot){
-            transform.parent.gameObject.GetComponent<Itemslots>().RemoveOnCraftingSlot(item);
+            transform.parent.gameObject.GetComponent<Itemslots>().RemoveOnCraftingSlot(gameObject);
         }
 
         parentAfterDrag = transform.parent;
@@ -42,7 +41,7 @@ public class ItemsDraggable : MonoBehaviour, IBeginDragHandler, IDragHandler, IE
         image.raycastTarget = true;
         transform.SetParent(parentAfterDrag);
         if(transform.parent.gameObject.GetComponent<Itemslots>().isCraftingSlot){
-            transform.parent.gameObject.GetComponent<Itemslots>().SetCraftingSlot(this);
+            transform.parent.gameObject.GetComponent<Itemslots>().SetCraftingSlot(gameObject);
         }
     }
 

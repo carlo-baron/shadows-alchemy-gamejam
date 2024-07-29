@@ -4,4 +4,5 @@ using UnityEngine;
 public class ItemScriptable : ScriptableObject
 {
     public Sprite sprite;
+    public bool ability;
 }
