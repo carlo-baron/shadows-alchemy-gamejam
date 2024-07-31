@@ -89,6 +89,18 @@ TextureImporter:
     overridden: 0
     androidETC2FallbackOverride: 0
     forceMaximumCompressionQuality_BC6H_BC7: 0
+  - serializedVersion: 3
+    buildTarget: WebGL
+    maxTextureSize: 2048
+    resizeAlgorithm: 0
+    textureFormat: -1
+    textureCompression: 0
+    compressionQuality: 50
+    crunchedCompression: 0
+    allowsAlphaSplitting: 0
+    overridden: 0
+    androidETC2FallbackOverride: 0
+    forceMaximumCompressionQuality_BC6H_BC7: 0
   spriteSheet:
     serializedVersion: 2
     sprites:
@@ -1689,7 +1701,7 @@ TextureImporter:
       edges: []
       weights: []
     - serializedVersion: 2
-      name: Dungeon Tile Set_84
+      name: sign
       rect:
         serializedVersion: 2
         x: 112
@@ -2820,7 +2832,6 @@ TextureImporter:
       Dungeon Tile Set_81: -1115223500
       Dungeon Tile Set_82: -1737096730
       Dungeon Tile Set_83: 1778536800
-      Dungeon Tile Set_84: -1307243969
       Dungeon Tile Set_85: 1513170918
       Dungeon Tile Set_86: -273858642
       Dungeon Tile Set_89: -1745883385
@@ -2847,6 +2858,7 @@ TextureImporter:
       door open: -614479689
       key: 2057764890
       platform single 2: 11358083
+      sign: -1307243969
   spritePackingTag: 
   pSDRemoveMatte: 0
   pSDShowRemoveMatteOption: 0

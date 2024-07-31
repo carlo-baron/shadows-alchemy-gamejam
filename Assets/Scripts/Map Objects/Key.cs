@@ -4,18 +4,34 @@ using UnityEngine;
 
 public class Key : MonoBehaviour
 {
+    Vector2 startPos;
     Transform followTransform; 
-    [SerializeField] float speed;
+    float speed;
+    [SerializeField, Range(0,1)] float speedMultiplier;
     bool collected = false;
     bool canOpenDoor = false;
     GameObject door;
+    Player player;
+
+    void Awake(){
+        player = GameObject.FindObjectOfType<Player>();
+        startPos = transform.position;
+        speed = player.runSpeed * speedMultiplier;
+    }
 
     void Update()
     {
+        if(player == null){
+            player = GameObject.FindObjectOfType<Player>();
+        }
+        speed = player.runSpeed * speedMultiplier;
+
         float step = speed * Time.deltaTime;
 
         if(followTransform != null){
             transform.position = Vector2.MoveTowards(transform.position, followTransform.position, step);
+        }else{
+            transform.position = startPos;
         }
 
         if(canOpenDoor) OpenDoor();
