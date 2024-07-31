@@ -9,6 +9,7 @@ TagManager:
   - Vcam
   - HealthBar
   - door
+  - Replenish
   layers:
   - Default
   - TransparentFX

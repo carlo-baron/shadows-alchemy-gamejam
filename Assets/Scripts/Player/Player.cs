@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Player : MonoBehaviour
@@ -7,6 +8,9 @@ public class Player : MonoBehaviour
     Rigidbody2D rb;
     Collider2D myCollider;
     LadderClimb ladderClimbScript;
+    VcamManager vcamManager;
+    SpriteRenderer sr;
+    TrailRenderer trailRenderer;
     bool isFlipped = false;
     public Animator anim { get; private set; }
     public bool isInShadow { get; private set; }
@@ -23,9 +27,13 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject feet;
 
     [Header("Run & Jump")]
-    [SerializeField] float runSpeed;
+    public float runSpeed = 5;
+    [SerializeField]private float dashingPower = 24f;
+    [SerializeField]float dashingTime = 0.2f;
+    [SerializeField]float dashingCooldown = 1f;
     [SerializeField, Range(0, 1)] float inLightSlowdownValue;
     [SerializeField] float jumpForce;
+    [SerializeField] float doubleJumpForce;
     [SerializeField] float groundDetectionRadius;
     [SerializeField] float cayoteTime;
     [SerializeField] float jumpBuffer;
@@ -35,10 +43,27 @@ public class Player : MonoBehaviour
     bool canRun;
     bool canJump;
     bool grounded;
+    bool canDoubleJump;
+    bool canDash = true;
+    bool isDashing;
+    bool isInvincible;
+
+    //abilities bool
+    public bool unlockDash = false;
+    public bool unlockDoubleJump = false;
+    public bool unlockInvincible = false;
+
+
+    [Header("Invincible")]
+    [SerializeField] float invincibleTime;
+    [SerializeField] float invicibilitySpeed;
+    [SerializeField, Range(0, 1)] float invicibilityAlpha;
 
     [Header("Death")]
     [SerializeField] float deathRiseSpeed;
     bool checkForDestroy = false;
+    float deathHeight;
+
 
 
     void Awake()
@@ -47,6 +72,10 @@ public class Player : MonoBehaviour
         anim = GetComponent<Animator>();
         ladderClimbScript = GetComponent<LadderClimb>();
         myCollider = GetComponent<Collider2D>();
+        sr = GetComponent<SpriteRenderer>();
+        trailRenderer = GetComponent<TrailRenderer>();
+        vcamManager = GameObject.FindObjectOfType<VcamManager>();
+        vcamManager.isDead = false;
 
         defaultGravity = 3f;
         fallGravity = 4f;
@@ -59,23 +88,40 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         moveInput = Input.GetAxisRaw("Horizontal");
         if (canRun)
         {
-            if (!isInShadow)
-            {
-                rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
-            }
-            else
-            {
-                rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
+            if(!isInvincible){
+                if (!isInShadow)
+                {
+                    rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
+                }
+                else
+                {
+                    rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
+                }
+            }else{
+                rb.velocity = new Vector2(moveInput * invicibilitySpeed, rb.velocity.y);
             }
         }
     }
     void Update()
     {
+        if (isDashing)
+        {
+            return;
+        }
+
         JumpHandler();
         FlipHandler();
+        DoubleJump();
+        Dash();
+        Invincible();
 
         if (lightSource != null)
         {
@@ -95,7 +141,7 @@ public class Player : MonoBehaviour
             anim.SetBool("isFalling", true);
             anim.SetBool("onJump", false);
         }
-        else
+        else if(grounded)
         {
             rb.gravityScale = defaultGravity;
             anim.SetBool("isFalling", false);
@@ -116,8 +162,8 @@ public class Player : MonoBehaviour
             {
                 myCollider.enabled = false;
             }
-
-            if (transform.position.y <= -10f)
+            
+            if (transform.position.y <= deathHeight)
             {
                 Destroy(gameObject);
             }
@@ -127,6 +173,58 @@ public class Player : MonoBehaviour
             DeathDetection();
         }
 
+    }
+
+    void DoubleJump(){
+        if(canDoubleJump && Input.GetKeyDown(KeyCode.Space) && !grounded){
+
+            rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
+            canDoubleJump = false;
+            unlockDoubleJump = false;
+        }
+    }
+
+    void Dash()
+    {
+        if(unlockDash){
+            if (canDash && Input.GetKeyDown(KeyCode.E))
+            {
+                StartCoroutine(DoDash());
+                unlockDash = false;
+            }
+        }
+    }
+
+    private IEnumerator DoDash()
+    {
+        canDash = false;
+        isDashing = true;
+        float originalGravity = rb.gravityScale;
+        rb.gravityScale = 0f;
+        rb.velocity = new Vector2(moveInput * dashingPower, 0f);
+        trailRenderer.emitting = true;
+        yield return new WaitForSeconds(dashingTime);
+        trailRenderer.emitting = false;
+        rb.gravityScale = originalGravity;
+        isDashing = false;
+        yield return new WaitForSeconds(dashingCooldown);
+        canDash = true;
+    }
+    
+    void Invincible(){
+        if(unlockInvincible){
+            if(Input.GetKeyDown(KeyCode.Q) && !isInvincible){
+                isInvincible = true;
+                sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, invicibilityAlpha);
+                Invoke("Vulnerable", invincibleTime);
+                unlockInvincible = false;
+            }
+        }
+    }
+
+    void Vulnerable(){
+        isInvincible = false;
+        sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f);
     }
 
     void FlipHandler()
@@ -161,6 +259,8 @@ public class Player : MonoBehaviour
         rb.velocity = new Vector2(rb.velocity.x, deathRiseSpeed);
         checkForDestroy = true;
         canRun = false;
+        deathHeight = transform.position.y - 10f;
+        vcamManager.isDead = true;
     }
 
     void JumpHandler()
@@ -169,6 +269,9 @@ public class Player : MonoBehaviour
         if (grounded)
         {
             cayoteTimeCounter = cayoteTime;
+            if(unlockDoubleJump){
+                canDoubleJump = true;
+            }
         }
         else
         {

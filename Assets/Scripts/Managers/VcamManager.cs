@@ -5,19 +5,14 @@ using UnityEngine;
 
 public class VcamManager : MonoBehaviour
 {
-    CinemachineVirtualCamera myVcam;
-    CinemachineFramingTransposer myVcamValues;
-    CinemachineVirtualCameraBase myVcamBase;
+    private CinemachineVirtualCamera myVcam;
+    public bool isDead = false;
     Transform player;
-    float moveInput;
 
 
     void Awake()
     {
         myVcam = GetComponent<CinemachineVirtualCamera>();
-        myVcamValues = GetComponent<CinemachineVirtualCamera>().GetCinemachineComponent<CinemachineFramingTransposer>();
-
-        //temp
         if(myVcam.Follow != null){
             player = myVcam.Follow.transform;
         }
@@ -25,12 +20,13 @@ public class VcamManager : MonoBehaviour
 
     void Update()
     {
-        moveInput = Input.GetAxisRaw("Horizontal");
-
-        if(moveInput > 0){
-            myVcamValues.m_ScreenX = 0.4f;
-        }else if(moveInput < 0){
-            myVcamValues.m_ScreenX = 0.6f;
+        if(!isDead){
+            if(GameObject.FindGameObjectWithTag("Player") != null){
+                myVcam.Follow = GameObject.FindGameObjectWithTag("Player").transform;
+            }
+        }else{
+            myVcam.Follow = null;
         }
+
     }
 }

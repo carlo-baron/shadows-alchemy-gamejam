@@ -12,16 +12,11 @@ public class RespawnManager : MonoBehaviour
     void Awake()
     {
         vcam = FindObjectOfType<CinemachineVirtualCamera>();
-        // if(vcam.Follow != null){
-        //     currentRespawnPoint = vcam.Follow.transform.GetChild(0).GetComponent<Transform>();
-        // }
-
         playerTracker = GameObject.FindGameObjectWithTag("Player");
     }
 
     void Update()
     {
-        // currentRespawnPoint = vcam.Follow.transform.GetChild(0).GetComponent<Transform>();
 
         if(playerTracker == null){
             Respawn();
