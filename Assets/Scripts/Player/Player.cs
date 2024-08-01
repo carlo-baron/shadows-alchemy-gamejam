@@ -28,9 +28,9 @@ public class Player : MonoBehaviour
 
     [Header("Run & Jump")]
     public float runSpeed = 5;
-    [SerializeField]private float dashingPower = 24f;
-    [SerializeField]float dashingTime = 0.2f;
-    [SerializeField]float dashingCooldown = 1f;
+    [SerializeField] private float dashingPower = 24f;
+    [SerializeField] float dashingTime = 0.2f;
+    [SerializeField] float dashingCooldown = 1f;
     [SerializeField, Range(0, 1)] float inLightSlowdownValue;
     [SerializeField] float jumpForce;
     [SerializeField] float doubleJumpForce;
@@ -96,7 +96,8 @@ public class Player : MonoBehaviour
         moveInput = Input.GetAxisRaw("Horizontal");
         if (canRun)
         {
-            if(!isInvincible){
+            if (!isInvincible)
+            {
                 if (!isInShadow)
                 {
                     rb.velocity = new Vector2(moveInput * runSpeed * inLightSlowdownValue, rb.velocity.y);
@@ -105,7 +106,9 @@ public class Player : MonoBehaviour
                 {
                     rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
                 }
-            }else{
+            }
+            else
+            {
                 rb.velocity = new Vector2(moveInput * invicibilitySpeed, rb.velocity.y);
             }
         }
@@ -141,9 +144,12 @@ public class Player : MonoBehaviour
             anim.SetBool("isFalling", true);
             anim.SetBool("onJump", false);
         }
-        else if(grounded)
+        else if (grounded)
         {
             rb.gravityScale = defaultGravity;
+        }
+        else
+        {
             anim.SetBool("isFalling", false);
         }
 
@@ -162,7 +168,7 @@ public class Player : MonoBehaviour
             {
                 myCollider.enabled = false;
             }
-            
+
             if (transform.position.y <= deathHeight)
             {
                 Destroy(gameObject);
@@ -175,8 +181,10 @@ public class Player : MonoBehaviour
 
     }
 
-    void DoubleJump(){
-        if(canDoubleJump && Input.GetKeyDown(KeyCode.Space) && !grounded){
+    void DoubleJump()
+    {
+        if (canDoubleJump && Input.GetKeyDown(KeyCode.Space) && !grounded)
+        {
 
             rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);
             canDoubleJump = false;
@@ -186,7 +194,8 @@ public class Player : MonoBehaviour
 
     void Dash()
     {
-        if(unlockDash){
+        if (unlockDash)
+        {
             if (canDash && Input.GetKeyDown(KeyCode.E))
             {
                 StartCoroutine(DoDash());
@@ -210,10 +219,13 @@ public class Player : MonoBehaviour
         yield return new WaitForSeconds(dashingCooldown);
         canDash = true;
     }
-    
-    void Invincible(){
-        if(unlockInvincible){
-            if(Input.GetKeyDown(KeyCode.Q) && !isInvincible){
+
+    void Invincible()
+    {
+        if (unlockInvincible)
+        {
+            if (Input.GetKeyDown(KeyCode.Q) && !isInvincible)
+            {
                 isInvincible = true;
                 sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, invicibilityAlpha);
                 Invoke("Vulnerable", invincibleTime);
@@ -222,7 +234,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    void Vulnerable(){
+    void Vulnerable()
+    {
         isInvincible = false;
         sr.color = new Color(sr.color.r, sr.color.g, sr.color.b, 1f);
     }
@@ -230,7 +243,7 @@ public class Player : MonoBehaviour
     void FlipHandler()
     {
         if (moveInput > 0 && isFlipped)
-{
+        {
             Flip();
         }
         else if (moveInput < 0 && !isFlipped)
@@ -239,7 +252,8 @@ public class Player : MonoBehaviour
         }
     }
 
-    public void Flip(){
+    public void Flip()
+    {
         transform.Rotate(0, 180, 0);
         isFlipped = !isFlipped;
     }
@@ -269,7 +283,8 @@ public class Player : MonoBehaviour
         if (grounded)
         {
             cayoteTimeCounter = cayoteTime;
-            if(unlockDoubleJump){
+            if (unlockDoubleJump)
+            {
                 canDoubleJump = true;
             }
         }

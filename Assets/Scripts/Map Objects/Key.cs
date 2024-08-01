@@ -23,8 +23,9 @@ public class Key : MonoBehaviour
     {
         if(player == null){
             player = GameObject.FindObjectOfType<Player>();
+        }else{
+            speed = player.runSpeed * speedMultiplier;
         }
-        speed = player.runSpeed * speedMultiplier;
 
         float step = speed * Time.deltaTime;
 
