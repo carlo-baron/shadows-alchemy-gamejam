@@ -236,22 +236,21 @@ MonoBehaviour:
   deathLayer:
     serializedVersion: 2
     m_Bits: 16
-  lightSource: {fileID: 0}
   feet: {fileID: 4893402665115796864}
   runSpeed: 5
   dashingPower: 24
   dashingTime: 0.2
   dashingCooldown: 1
   inLightSlowdownValue: 0.4
-  jumpForce: 14
-  doubleJumpForce: 12
+  jumpForce: 15
+  doubleJumpForce: 11
   groundDetectionRadius: 0.1
   cayoteTime: 0.2
   jumpBuffer: 0.2
   unlockDash: 0
   unlockDoubleJump: 0
   unlockInvincible: 0
-  invincibleTime: 1
+  invincibleTime: 1.5
   invicibilitySpeed: 10
   invicibilityAlpha: 0.2
   deathRiseSpeed: 15

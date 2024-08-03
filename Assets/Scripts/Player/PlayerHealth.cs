@@ -33,7 +33,7 @@ public class PlayerHealth : MonoBehaviour
         }
 
         if(health <= 0){
-            player.Die();
+            player.Die(false);
         }
     }
 

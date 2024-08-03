@@ -24,7 +24,8 @@ public class RespawnManager : MonoBehaviour
     }
 
     void Respawn(){
-        Instantiate(playerPrefab, currentRespawnPoint.position, Quaternion.identity);
+        GameObject player = Instantiate(playerPrefab, currentRespawnPoint.position, Quaternion.identity);
+        player.GetComponent<AbilityUnlocker>().numberOfAbilities = GameManager.abilities;
         playerTracker = GameObject.FindGameObjectWithTag("Player");
     }
 }

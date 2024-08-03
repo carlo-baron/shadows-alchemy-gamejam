@@ -23,7 +23,6 @@ public class Player : MonoBehaviour
     [SerializeField] LayerMask deathLayer;
 
     [Header("GameObjects")]
-    [SerializeField] GameObject lightSource;
     [SerializeField] GameObject feet;
 
     [Header("Run & Jump")]
@@ -104,10 +103,11 @@ public class Player : MonoBehaviour
                 }
                 else
                 {
+                    isInShadow = true;
                     rb.velocity = new Vector2(moveInput * runSpeed, rb.velocity.y);
                 }
             }
-            else
+            else if(isInvincible)
             {
                 rb.velocity = new Vector2(moveInput * invicibilitySpeed, rb.velocity.y);
             }
@@ -126,18 +126,6 @@ public class Player : MonoBehaviour
         Dash();
         Invincible();
 
-        if (lightSource != null)
-        {
-            if (Physics2D.Linecast(new Vector2(transform.position.x, transform.position.y + 1f), lightSource.transform.position, lightLayer))
-            {
-                isInShadow = true;
-            }
-            else
-            {
-                isInShadow = false;
-            }
-        }
-
         if (!grounded && rb.velocity.y < 0)
         {
             rb.gravityScale = fallGravity;
@@ -147,9 +135,8 @@ public class Player : MonoBehaviour
         else if (grounded)
         {
             rb.gravityScale = defaultGravity;
-        }
-        else
-        {
+            anim.SetBool("isFalling", false);
+        }else if(rb.velocity.y > 0){
             anim.SetBool("isFalling", false);
         }
 
@@ -164,10 +151,7 @@ public class Player : MonoBehaviour
 
         if (checkForDestroy)
         {
-            if (rb.velocity.y < 0)
-            {
-                myCollider.enabled = false;
-            }
+            myCollider.enabled = false;
 
             if (transform.position.y <= deathHeight)
             {
@@ -263,13 +247,15 @@ public class Player : MonoBehaviour
         bool isDeathTile = Physics2D.OverlapCircle(feet.transform.position, groundDetectionRadius, deathLayer);
         if (isDeathTile)
         {
-            Die();
+            Die(isDeathTile);
         }
     }
 
-    public void Die()
+    public void Die(bool deathTile)
     {
-        rb.velocity = Vector2.zero;
+        if(deathTile){
+            rb.velocity = Vector2.zero;
+        }
         rb.velocity = new Vector2(rb.velocity.x, deathRiseSpeed);
         checkForDestroy = true;
         canRun = false;
@@ -345,17 +331,7 @@ public class Player : MonoBehaviour
         switch (other.tag)
         {
             case "Light":
-                lightSource = other.gameObject;
-                if (lightSource.GetComponent<RotatingLamp>() != null)
-                {
-                    if (lightSource.GetComponent<RotatingLamp>().playerDetected)
-                    {
-                        isInShadow = false;
-                        canJump = false;
-                    }
-                }
-                else
-                {
+                if(!isInvincible) {
                     isInShadow = false;
                     canJump = false;
                 }
@@ -368,15 +344,22 @@ public class Player : MonoBehaviour
 
     void OnTriggerStay2D(Collider2D other)
     {
-        if (other.tag == "Ladder")
+        switch (other.tag)
         {
-            SwitchToLadder();
+            case "Light":
+                if(!isInvincible) {
+                    isInShadow = false;
+                    canJump = false;
+                }
+                break;
+            case "Ladder":
+                SwitchToLadder();
+                break;
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
-        lightSource = null;
         canJump = true;
         isInShadow = true;
     }

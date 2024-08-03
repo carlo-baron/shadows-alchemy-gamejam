@@ -24,6 +24,7 @@ public class AbilityUnlocker : MonoBehaviour
             default:
                 break;
         }
+        GameManager.abilities = numberOfAbilities;
     }
     public void ReplenishAbility(){
         switch(numberOfAbilities){
