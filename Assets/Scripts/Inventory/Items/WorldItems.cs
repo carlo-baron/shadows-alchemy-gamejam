@@ -52,7 +52,7 @@ public class WorldItems : MonoBehaviour
         if (other.gameObject.CompareTag("Player"))
         {
             inventoryManager.AddItem(itemData);
-            gameObject.SetActive(false);
+            Destroy(gameObject);
         }
     }
 

@@ -35,6 +35,16 @@ public class ChestBehaviour : MonoBehaviour
     {
         if (other.CompareTag("Player") && !isOpen)
             controlHints.Show(fadeSpeed);
+
+            if (Input.GetKeyDown(KeyCode.F) && !isSpawning)
+            {
+                if (items != null && !isOpen)
+                {
+                    controlHints.Hide(fadeSpeed);
+                    StartCoroutine(DelayedSpawn());
+                    anim.SetTrigger("open");
+                }
+            }
     }
 
     void OnTriggerStay2D(Collider2D other)

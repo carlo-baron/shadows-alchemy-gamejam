@@ -26,8 +26,10 @@ public class Player : MonoBehaviour
     [SerializeField] GameObject feet;
 
     [Header("Run & Jump")]
-    public float runSpeed = 5;
     [SerializeField] private float dashingPower = 24f;
+    [SerializeField]private float runSpeed;
+    public float RunSpeed{get{return runSpeed;} set{runSpeed = value;}}
+
     [SerializeField] float dashingTime = 0.2f;
     [SerializeField] float dashingCooldown = 1f;
     [SerializeField, Range(0, 1)] float inLightSlowdownValue;
@@ -167,7 +169,7 @@ public class Player : MonoBehaviour
 
     void DoubleJump()
     {
-        if (canDoubleJump && Input.GetKeyDown(KeyCode.Space) && !grounded)
+        if (canDoubleJump && Input.GetKeyDown(KeyCode.Space) && !grounded && cayoteTimeCounter < 0)
         {
 
             rb.velocity = new Vector2(rb.velocity.x, doubleJumpForce);

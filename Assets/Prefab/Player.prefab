@@ -241,9 +241,9 @@ MonoBehaviour:
   dashingPower: 24
   dashingTime: 0.2
   dashingCooldown: 1
-  inLightSlowdownValue: 0.4
+  inLightSlowdownValue: 0.3
   jumpForce: 15
-  doubleJumpForce: 11
+  doubleJumpForce: 12
   groundDetectionRadius: 0.1
   cayoteTime: 0.2
   jumpBuffer: 0.2

@@ -6,27 +6,17 @@ public class Key : MonoBehaviour
 {
     Vector2 startPos;
     Transform followTransform; 
-    float speed;
-    [SerializeField, Range(0,1)] float speedMultiplier;
+    [SerializeField] float speed;
     bool collected = false;
     bool canOpenDoor = false;
     GameObject door;
-    Player player;
 
     void Awake(){
-        player = GameObject.FindObjectOfType<Player>();
         startPos = transform.position;
-        speed = player.runSpeed * speedMultiplier;
     }
 
     void Update()
     {
-        if(player == null){
-            player = GameObject.FindObjectOfType<Player>();
-        }else{
-            speed = player.runSpeed * speedMultiplier;
-        }
-
         float step = speed * Time.deltaTime;
 
         if(followTransform != null){
