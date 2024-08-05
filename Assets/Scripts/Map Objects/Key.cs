@@ -23,6 +23,7 @@ public class Key : MonoBehaviour
             transform.position = Vector2.MoveTowards(transform.position, followTransform.position, step);
         }else{
             transform.position = startPos;
+            collected = false;
         }
 
         if(canOpenDoor) OpenDoor();

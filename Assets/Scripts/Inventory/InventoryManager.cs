@@ -45,7 +45,6 @@ public class InventoryManager : MonoBehaviour
     {
         GameObject newItem = Instantiate(itemsTemplate, slot.transform);
         if(item.ability){
-            newItem.transform.Rotate(0, 0, -90);
             newItem.GetComponent<ItemsDraggable>().enabled = false;
             newItem.GetComponent<ItemExchange>().enabled = false;
         }
