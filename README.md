@@ -3,10 +3,10 @@ The player controls a cat character with basic platformer movements(run, jump, c
 
 
 
-# Play
+## Play
 https://jamborant.itch.io/shadowscape
 
-# Controls
+## Controls
 - WASD - Horizontal and Vertical (Ladder) movement
 - Space Bar - Jump
 - E - Dash
